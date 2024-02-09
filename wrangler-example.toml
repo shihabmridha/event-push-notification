@@ -1,0 +1,23 @@
+name = "event-push-notification"
+main = "src/index.ts"
+compatibility_date = "2024-02-08"
+compatibility_flags = [ "nodejs_compat" ]
+
+[placement]
+mode = "smart"
+
+[triggers]
+crons = ["1 0 * * *"]
+
+[dev]
+ip="localhost"
+port = 3000
+local_protocol = "http"
+
+[vars]
+PUSHBULLET_TOKEN = "token"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "event_dates"
+database_id = "DB_ID"
