@@ -48,16 +48,18 @@ export default {
 			const today = new Date();
 			today.setHours(today.getHours() + 6); // UTC to Bangladesh Standard Time (UTC+6)
 
+			const currentHour = today.getHours();
 			const currentDate = today.getDate();
 			const currentMonth = today.getMonth() + 1;
 
-			const isSameDate = currentDate == event.day;
-			const isSameMonth = currentMonth == event.month;
+			const isMidnight = currentHour === 0;
+			const isSameDate = currentDate === event.day;
+			const isSameMonth = currentMonth === event.month;
 
 			console.log(today, isSameMonth, isSameDate);
 			console.log(`${today}, SameMonth = ${isSameMonth} (${event.month}-${currentMonth}), SameDay = ${isSameDate} (${event.day}-${currentDate})`);
 
-			return isSameDate && isSameMonth;
+			return isSameDate && isSameMonth && isMidnight;
 		});
 
 		console.log(`${todayEvents.length} events found today`);
