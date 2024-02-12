@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 export interface Env {
 	DB: D1Database;
 	PUSHBULLET_TOKEN: string;
@@ -12,44 +10,60 @@ export interface Event {
 	month: number;
 }
 
+async function sendPushNotification(event: Event, token: string) {
+	const API_ENDPOINT = 'https://api.pushbullet.com/v2/pushes';
+
+	const response = await fetch(API_ENDPOINT, {
+		method: 'post',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${token}`
+		},
+		body: JSON.stringify({
+			type: 'note',
+			title: `${event.name}'s ${event.type}`,
+			body: `Wish ${event.name} for ${event.type}`
+		}),
+	});
+
+	if (response.ok) {
+		console.log(`Notification sent for ${event.name}'s ${event.type}`);
+	} else {
+		const errorResponse = await response.json();
+		const formattedErrorResponse = JSON.stringify(errorResponse, null, 2);
+		console.error(`Failed to send notification for ${event.name}'s ${event.type}.\nResponse: ${formattedErrorResponse}`);
+	}
+}
+
 export default {
 	async fetch(_request: Request, _env: Env, _ctx: ExecutionContext): Promise<Response> {
 		return new Response('Why are you here?');
 	},
 
-	async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
+	async scheduled(_event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
 		const { results } = await env.DB.prepare("SELECT * FROM personal_events").all<Event>();
 
-		const todayEvents = results.filter((i) => {
-			const today = dayjs().add(6, 'h'); // UTC to UTC+6
+		const todayEvents = results.filter((event) => {
+			const today = new Date();
+			today.setHours(today.getHours() + 6); // UTC to Bangladesh Standard Time (UTC+6)
 
-			// isSame() does not work without same year
-			const dob = dayjs().set("month", i.month - 1).set("date", i.day);
+			const currentDate = today.getDate();
+			const currentMonth = today.getMonth() + 1;
 
-			const isSameMonth = dob.isSame(today, "month");
-			const isSameDay = dob.isSame(today, "day");
+			const isSameDate = currentDate == event.day;
+			const isSameMonth = currentMonth == event.month;
 
-			console.log(today.toDate(), isSameMonth, isSameDay);
+			console.log(today, isSameMonth, isSameDate);
+			console.log(`${today}, SameMonth = ${isSameMonth} (${event.month}-${currentMonth}), SameDay = ${isSameDate} (${event.day}-${currentDate})`);
 
-			return isSameDay && isSameMonth;
+			return isSameDate && isSameMonth;
 		});
 
-		for (const event of todayEvents) {
-			await fetch('https://api.pushbullet.com/v2/pushes', {
-				method: 'post',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${env.PUSHBULLET_TOKEN}`
-				},
-				body: JSON.stringify({
-					type: 'note',
-					title: `${event.name}'s ${event.type}`,
-					body: `Wish ${event.name} for ${event.type}`
-				}),
-			});
-		}
-
 		console.log(`${todayEvents.length} events found today`);
+
+		for (const event of todayEvents) {
+			await sendPushNotification(event, env.PUSHBULLET_TOKEN);
+		}
 	},
 };
