@@ -3,6 +3,8 @@ main = "src/index.ts"
 compatibility_date = "2024-02-08"
 compatibility_flags = [ "nodejs_compat" ]
 
+route = { pattern = "{{CUSTOM_DOMAIN}}", zone_name = "{{CUSTOM_DOMAIN_ZONE}}", custom_domain = true }
+
 [placement]
 mode = "smart"
 
@@ -21,7 +23,3 @@ PUSHBULLET_TOKEN = "{{PUSHBULLET_TOKEN}}"
 binding = "DB"
 database_name = "{{DATABASE_NAME}}"
 database_id = "{{DATABASE_ID}}"
-
-routes = [
-	{ pattern = "{{CUSTOM_DOMAIN}}", custom_domain = true }
-]
