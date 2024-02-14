@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
@@ -23,5 +23,6 @@ jobs:
           sed -i 's/{{PUSHBULLET_TOKEN}}/${{ secrets.PUSHBULLET_TOKEN }}/g' wrangler.toml
           sed -i 's/{{DATABASE_NAME}}/${{ secrets.DATABASE_NAME }}/g' wrangler.toml
           sed -i 's/{{DATABASE_ID}}/${{ secrets.DATABASE_ID }}/g' wrangler.toml
+          sed -i 's/{{CUSTOM_DOMAIN}}/${{ secrets.CUSTOM_DOMAIN }}/g' wrangler.toml
       - name: Deploy to CF Worker
         run: CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }} pnpm run deploy

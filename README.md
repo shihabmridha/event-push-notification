@@ -18,5 +18,5 @@ pnpm dev --remote --test-scheduled
 
 Hit the following endpoint to execute the function
 ```
-http://localhost:3000/__scheduled?cron=1+0+*+*+*
+http://localhost:3000/__scheduled?cron=0+*/1+*+*+*
 ```

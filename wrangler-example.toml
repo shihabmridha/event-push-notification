@@ -21,3 +21,7 @@ PUSHBULLET_TOKEN = "{{PUSHBULLET_TOKEN}}"
 binding = "DB"
 database_name = "{{DATABASE_NAME}}"
 database_id = "{{DATABASE_ID}}"
+
+routes = [
+	{ pattern = "{{CUSTOM_DOMAIN}}", custom_domain = true }
+]
