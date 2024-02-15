@@ -1,14 +1,4 @@
-export interface Env {
-	DB: D1Database;
-	PUSHBULLET_TOKEN: string;
-}
-
-export interface Event {
-	name: string;
-	type: string;
-	day: number;
-	month: number;
-}
+import { Env, Event } from "./types";
 
 async function sendPushNotification(event: Event, token: string) {
 	const API_ENDPOINT = 'https://api.pushbullet.com/v2/pushes';
