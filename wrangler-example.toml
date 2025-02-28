@@ -8,6 +8,9 @@ route = { pattern = "{{CUSTOM_DOMAIN}}", zone_name = "{{CUSTOM_DOMAIN_ZONE}}", c
 [placement]
 mode = "smart"
 
+[observability]
+enabled = true
+
 [triggers]
 crons = ["0 */1 * * *"]
 
@@ -18,6 +21,9 @@ local_protocol = "http"
 
 [vars]
 PUSHBULLET_TOKEN = "{{PUSHBULLET_TOKEN}}"
+NTFY_HOST = "{{NTFY_HOST}}"
+NTFY_TOKEN = "{{NTFY_TOKEN}}"
+TEST_TOKEN = "{{TEST_TOKEN}}"
 
 [[d1_databases]]
 binding = "DB"
